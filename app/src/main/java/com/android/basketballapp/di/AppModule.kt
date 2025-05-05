@@ -1,6 +1,9 @@
-// AppModule.kt
 package com.android.basketballapp.di
 
+import android.content.Context
+import androidx.room.Room
+import com.android.basketballapp.data.local.AppDatabase
+import com.android.basketballapp.data.local.dao.GameDao
 import com.android.basketballapp.data.remote.api.GameApi
 import com.android.basketballapp.data.remote.api.PlayerApi
 import com.android.basketballapp.data.remote.api.TeamApi
@@ -16,6 +19,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -63,18 +67,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGameRepository(api: GameApi): GameRepository =
-        GameRepositoryImpl(api)
-
-    @Provides
-    @Singleton
     fun providePlayerApi(retrofit: Retrofit): PlayerApi =
         retrofit.create(PlayerApi::class.java)
-
-    @Provides
-    @Singleton
-    fun providePlayerRepository(api: PlayerApi): PlayerRepository =
-        PlayerRepositoryImpl(api)
 
     @Provides
     @Singleton
@@ -83,7 +77,31 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
+        Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "basketball_db"
+        ).build()
+
+    @Provides
+    @Singleton
+    fun provideGameDao(db: AppDatabase): GameDao = db.gameDao()
+
+    @Provides
+    @Singleton
+    fun provideGameRepository(
+        api: GameApi,   // ✅ fixed order
+        dao: GameDao
+    ): GameRepository = GameRepositoryImpl(api, dao)
+
+    @Provides
+    @Singleton
+    fun providePlayerRepository(api: PlayerApi): PlayerRepository =
+        PlayerRepositoryImpl(api)
+
+    @Provides
+    @Singleton
     fun provideTeamRepository(api: TeamApi): TeamRepository =
         TeamRepositoryImpl(api)
-
 }
