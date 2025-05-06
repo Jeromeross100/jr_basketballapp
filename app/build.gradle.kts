@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.google.services)
     id("com.google.devtools.ksp")
@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.android.basketballapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.android.basketballapp"
@@ -36,10 +36,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    kotlinOptions {
-        jvmTarget = "11"
-    }
-
     buildFeatures {
         compose = true
     }
@@ -52,9 +48,6 @@ android {
         unitTests.isIncludeAndroidResources = true
     }
 }
-
-// ✅ Required for ksp(...) function to work in Kotlin DSL
-val ksp by configurations.creating
 
 dependencies {
     // Jetpack Compose & AndroidX
@@ -106,6 +99,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.work.testing)
+    androidTestImplementation(libs.compose.ui.test.junit4)
 
     // Compose UI Testing
     androidTestImplementation(libs.androidx.ui.test.junit4)
