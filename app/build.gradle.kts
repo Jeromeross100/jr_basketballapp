@@ -2,18 +2,20 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
-    alias(libs.plugins.ksp) // ✅ Using KSP instead of KAPT
-    id("com.google.gms.google-services")
+    alias(libs.plugins.google.services)
+    id("com.google.devtools.ksp")
 }
+
+
 
 android {
     namespace = "com.android.basketballapp"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.android.basketballapp"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -51,8 +53,11 @@ android {
     }
 }
 
+// ✅ Required for ksp(...) function to work in Kotlin DSL
+val ksp by configurations.creating
+
 dependencies {
-    //  AndroidX & Jetpack Compose
+    // Jetpack Compose & AndroidX
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -64,7 +69,7 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
 
-    //  Firebase (BoM)
+    // Firebase & Google Play
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.analytics.ktx)
@@ -72,7 +77,7 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.play.services.games)
 
-    //  Networking - Retrofit & Moshi
+    // Networking - Retrofit & Moshi
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.moshi)
     implementation(libs.moshi)
@@ -80,7 +85,7 @@ dependencies {
     ksp(libs.moshi.kotlin.codegen)
     implementation(libs.transport.runtime)
 
-    //  Dependency Injection & Room & WorkManager
+    // Hilt DI + WorkManager + Room
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.work)
@@ -90,19 +95,19 @@ dependencies {
     implementation(libs.androidx.room.common.jvm)
     ksp(libs.androidx.room.compiler)
 
-    //  Support annotations
+    // Support annotations
     implementation(libs.support.annotations)
 
-    //  Unit Testing
+    // Unit Testing
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
 
-    //  Android Instrumented Testing
+    // Instrumented Testing
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.work.testing)
 
-    //  Compose UI Testing
+    // Compose UI Testing
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

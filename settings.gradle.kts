@@ -1,12 +1,13 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal() // ✅ Must be first to resolve KSP plugin correctly
+        gradlePluginPortal() //  Required for most Gradle plugins
         google()
         mavenCentral()
-        maven("https://plugins.gradle.org/m2/") // ✅ Optional backup
+        maven("https://plugins.gradle.org/m2/") // ✅ Optional backup for plugin resolution
     }
 
     plugins {
+        //  Explicit declaration of the KSP plugin
         id("com.google.devtools.ksp") version "1.9.22-1.0.20"
     }
 }
